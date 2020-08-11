@@ -11,7 +11,7 @@ function EmployeeCard({ result }) {
                         <h3 className='card-title'>{`${result.name.first} ${result.name.last}`}</h3>
                         <ul className='card-text'>
                             <li><strong>Cell: </strong> {result.cell}</li>
-                            <li><strong>Location: </strong> {`${result.location.state}, ${result.location.city}`}</li>
+                            <li><strong>Location: </strong> {`${result.location.city}, ${result.location.state}`}</li>
                             <li><strong>Username: </strong>{result.login.username}</li>
 
                         </ul>

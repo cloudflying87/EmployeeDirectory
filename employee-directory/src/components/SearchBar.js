@@ -3,7 +3,7 @@ import Button from './Buttton';
 
 function SearchBar(props) {
     return (
-        <form className='form'>
+        <form className='form mb-3'>
             <label htmlFor='search'>Search: </label>
             <input 
                 onChange={props.handleInputChange}
