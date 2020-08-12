@@ -7,7 +7,7 @@ import Button from './Buttton';
 class EmployeeCards extends React.Component {
     state = {
         search: "",
-        result: [],
+        results: [],
         filteredResults: []
     };
 
@@ -18,6 +18,7 @@ class EmployeeCards extends React.Component {
     renderEmployees = () => {
         // console.log(this.state.result)
         // console.log(this.state.filteredResults)
+
         return this.state.filteredResults.map(results => <EmployeeCard key={results.cell} result={results} />)
     };
 
@@ -25,7 +26,7 @@ class EmployeeCards extends React.Component {
     searchEmployees = () => {
         API.search()
             .then(res => this.setState({
-                result: res.data.results,
+                results: res.data.results,
                 filteredResults: res.data.results
             }))
             .catch(err => console.error(err));
@@ -40,40 +41,26 @@ class EmployeeCards extends React.Component {
 
     handleFormSubmit = event => {
         event.preventDefault();
-        // let filteredRes = this.state.filteredResults.filter(res => {
-        //     if (typeof this.state.filteredResults === 'string') {
-        //         return res.name.first.includes(this.state.search) || res.name.last.includes(this.state.search)
-        //     } else if (typeof parseInt(this.state.seach) === 'number') {
-        //         return res.cell.includes(this.state.search)
-        //     }
-        //     // res.cell.includes(this.state.search)
-        //     // res.name.last.includes(this.state.search),
-        // })
 
+        this.setState(() => {
+            const updatedResults = this.state.filteredResults.filter(x => 
+                x.name.first.includes(this.state.search),
+                x.name.last.includes(this.state.search)
+                
+                )
+            console.log(updatedResults)
+            if (!this.state.search) {
+                return { filteredResults: this.state.results }
+            } else {
+                return { filteredResults: updatedResults }
+            };
+        });
 
-
-        const callback = (res) => {
-            console.log(res.name.last)
-            if (res.name.last.includes(this.state.search)) {
-                console.log("Success")
-            }
-            // console.log("filtered", this.state.filteredResults)
-
-            // return this.setState({ filteredResults: })
-        };
-
-        this.setState({
-            filteredResults: this.state.result.filter(callback)
-        })
-    }
-
-    renderFilteredEmployees = () => {
-        console.log("filtered employees")
-    }
+        this.renderEmployees();
+    };
 
     renderSortedEmployees = event => {
         event.preventDefault();
-        console.log("something")
 
         // found at https://www.sitepoint.com/sort-an-array-of-objects-in-javascript/
         function compare(a, b) {
@@ -104,7 +91,7 @@ class EmployeeCards extends React.Component {
                 />
                 <Button
                     handleFormSubmit={this.renderSortedEmployees}
-                    name='Sort'
+                    name='Sort By Last Name'
                 />
                 {this.renderEmployees()}
             </div>
