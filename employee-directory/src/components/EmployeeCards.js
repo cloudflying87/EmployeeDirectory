@@ -2,11 +2,13 @@ import React from 'react';
 import API from '../utils/API';
 import EmployeeCard from './EmployeeCard';
 import SearchBar from './SearchBar';
+import Button from './Buttton';
 
 class EmployeeCards extends React.Component {
     state = {
         search: "",
-        result: []
+        result: [],
+        filteredResults: []
     };
 
     componentDidMount = () => {
@@ -15,13 +17,18 @@ class EmployeeCards extends React.Component {
 
     renderEmployees = () => {
         console.log(this.state.result)
-        return this.state.result.map(results => <EmployeeCard key={results.cell} result={results} />)
+        console.log(this.state.filteredResults)
+
+        return this.state.filteredResults.map(results => <EmployeeCard key={results.cell} result={results} />)
     };
 
 
     searchEmployees = () => {
         API.search()
-            .then(res => this.setState({ result: res.data.results }))
+            .then(res => this.setState({
+                result: res.data.results,
+                filteredResults: res.data.results
+            }))
             .catch(err => console.error(err));
     };
 
@@ -34,8 +41,8 @@ class EmployeeCards extends React.Component {
 
     handleFormSubmit = event => {
         event.preventDefault();
-        // let results = this.state.result.filter(res => {
-        //     if (typeof this.state.result === 'string') {
+        // let filteredRes = this.state.filteredResults.filter(res => {
+        //     if (typeof this.state.filteredResults === 'string') {
         //         return res.name.first.includes(this.state.search) || res.name.last.includes(this.state.search)
         //     } else if (typeof parseInt(this.state.seach) === 'number') {
         //         return res.cell.includes(this.state.search)
@@ -43,24 +50,47 @@ class EmployeeCards extends React.Component {
         //     // res.cell.includes(this.state.search)
         //     // res.name.last.includes(this.state.search),
         // })
-        
-        // console.log("results", results)
-        // this.renderSortedEmployees()
-    };
+
+
+
+        const callback = (res) => {
+            if (res.name.last.includes(this.state.search)) {
+                console.log("Success")
+            }
+            console.log("filtered", this.state.filteredResults)
+
+            // return this.setState({ filteredResults: })
+        };
+
+        this.setState({
+            filteredResults: this.state.result.filter(callback)
+        })
+    }
 
     renderFilteredEmployees = () => {
         console.log("filtered employees")
     }
 
-    renderSortedEmployees = () => {
-        // console.log("sorted results ", sortedResults)
-        // let sortedResults = this.state.result.map(x => x.name.last).sort();
-        // this.state.result.sort()
-        console.log(this.state.result)
-        return this.state.result.map(results => <EmployeeCard key={results.cell} result={results} />)
-        // return console.log("sorted results ", sortedResults)
-        // return <EmployeeCard key={this.state.result.cell} result={sortedResults} />
-    }
+    renderSortedEmployees = event => {
+        event.preventDefault();
+        console.log("something")
+
+        // found at https://www.sitepoint.com/sort-an-array-of-objects-in-javascript/
+        function compare(a, b) {
+            const nameA = a.name.first.toUpperCase();
+            const nameB = b.name.first.toUpperCase();
+
+            let comparison = 0;
+            if (nameA > nameB) {
+                comparison = 1;
+            } else if (nameA < nameB) {
+                comparison = -1;
+            };
+            return comparison;
+        };
+
+        return this.setState({ filteredResults: this.state.filteredResults.sort(compare) })
+    };
 
 
     render() {
@@ -70,15 +100,13 @@ class EmployeeCards extends React.Component {
                     handleInputChange={this.handleInputChange}
                     value={this.state.search}
                     handleFormSubmit={this.handleFormSubmit}
+                    name='Search'
                 />
-                <p>
-                    {/* {this.renderSortedEmployees} */}
-                </p>
-                {/* {
-                    !this.search.state ? this.renderEmployees : this.renderFilteredEmployees
-                } */}
-                {/* {console.log(this.state.result)} */}
-                {this.renderSortedEmployees()}
+                <Button
+                    handleFormSubmit={this.renderSortedEmployees}
+                    name='Sort'
+                />
+                {this.renderEmployees()}
             </div>
         )
     };
