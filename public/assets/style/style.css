@@ -27,3 +27,7 @@ body {
 ul {
     list-style: none;
 }
+
+.customimage{
+    height: 150px;
+}
