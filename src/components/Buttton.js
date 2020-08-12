@@ -1,10 +1,15 @@
 import React from 'react';
-
+var value
 function Button(props) {
+    console.log(props)
     return (
         <button
+            
             className='btn btn-success ml-2'
-            onClick={props.handleFormSubmit}
+            onClick={
+                value=props.value,
+                props.handleFormSubmit
+                }
         >
             {props.name}
         </button>

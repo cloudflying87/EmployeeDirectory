@@ -44,7 +44,7 @@ class EmployeeCards extends React.Component {
 
         this.setState(() => {
             const updatedResults = this.state.filteredResults.filter(x => 
-                x.name.first.includes(this.state.search),
+                x.name.first.includes(this.state.search) ||
                 x.name.last.includes(this.state.search)
                 
                 )
@@ -59,9 +59,9 @@ class EmployeeCards extends React.Component {
         this.renderEmployees();
     };
 
-    renderSortedEmployees = event => {
+    renderSortedEmployees = (event,value) => {
         event.preventDefault();
-
+        
         // found at https://www.sitepoint.com/sort-an-array-of-objects-in-javascript/
         function compare(a, b) {
             const nameA = a.name.last.toUpperCase();
@@ -92,6 +92,7 @@ class EmployeeCards extends React.Component {
                 <Button
                     handleFormSubmit={this.renderSortedEmployees}
                     name='Sort By Last Name'
+                    value = 'last'
                 />
                 {this.renderEmployees()}
             </div>
